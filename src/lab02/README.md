@@ -1,1 +1,1 @@
-![код](../../images/lab01/exA1.py)
+![код](../../scr/lab02/exA1.py)
