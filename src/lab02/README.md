@@ -136,5 +136,5 @@ def format_record(rec: tuple[str, str, float]) -> str:
 
     return f"{surname} {initials}, гр. {group}, GPA {gpa_str}"
 ```
-![фото](../../images/lab02/exС.png)
+![фото](../../images/lab02/exC.png)
 
