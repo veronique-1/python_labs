@@ -1,4 +1,9 @@
 def format_record(rec: tuple[str, str, float]) -> str:
+    
+    if not isinstance(rec,tuple):
+        raise TypeError
+    if len(rec) != 3:
+        raise ValueError("Запись должна содержать ровно 3 элемента")
 
     fio, group, gpa = rec
 
