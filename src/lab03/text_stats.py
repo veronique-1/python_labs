@@ -32,8 +32,8 @@ def main():
         for word, count in top5:
             print(f"{word}:{count}")
             
-    else: 
-        if not top5: # красивый вывод
+    else: # красивый вывод
+        if not top5: 
             print('Нет слов для отображения')
         else:
             max_len = max(max([len(word[0]) for word in top5]), len('слово'))
