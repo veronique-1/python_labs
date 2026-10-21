@@ -140,8 +140,6 @@ def write_csv(rows: Iterable[Sequence], path: str | Path, header: tuple[str, ...
 ``` python
 from src.lab04.io_txt_csv import read_text, write_csv, ensure_parent_dir
 from src.lib.text import normalize, tokenize, top_n, count_freq
-import argparse
-import sys
 from pathlib import Path
 
 
