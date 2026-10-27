@@ -1,6 +1,7 @@
 from src.lab04.io_txt_csv import read_text, write_csv, ensure_parent_dir
 from src.lib.text import normalize, tokenize, top_n, count_freq
 from pathlib import Path
+import argparse
 
 
 def generate_report(input_path: str | Path, output_path: str | Path, encoding: str = "utf-8"):
@@ -41,7 +42,7 @@ def run_test_a():
 
     input_file = "data/lab04/input.txt"
     output_file = "data/lab04/report.csv"
-
+    
     ensure_parent_dir(input_file)
     Path(input_file).write_text("Привет, мир, привет!!!", encoding = "utf-8")
 
@@ -97,9 +98,24 @@ def run_test_c():
     print("--Результат в report_cp1251---")
     print(read_text(output_file))
                                 
-if __name__ == "__main__":
-    run_test_a()
-    run_test_b_empty()
-    run_test_c()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--in", dest="input_path", default="data/input.txt")
+    parser.add_argument("--out", dest="output_path", default="data/report.csv")
+    parser.add_argument("--encoding", default="utf-8")
+    parser.add_argument("--test", action="store_true")
+    
+    args = parser.parse_args()
 
+    if args.test:
+        run_test_a()
+        run_test_b_empty()
+        run_test_c()
+    else:
+        generate_report(args.input_path, args.output_path, encoding=args.encoding)
+
+if __name__ == "__main__":
+    main()
+    
 # python3 -m src.lab04.text_report
+# python -m src.lab04.text_report --in data/in.txt --out data/out.csv
