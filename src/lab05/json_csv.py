@@ -1,5 +1,3 @@
-''' ЛР5 задание А: конвертация JSON <-> CSV'''
-
 import json
 import csv
 from pathlib import Path
@@ -88,11 +86,9 @@ def csv_to_json(csv_path: str, json_path: str) -> None:
 
 
 if __name__ == "__main__":
-    # Обратите внимание: в ТЗ структура папок data/samples и data/out.
-    # Если у вас они лежат именно так, измените пути ниже.
-    sample_json = "data/samples/people.json"
-    out_csv = "data/out/people_from_json.csv"
-    out_json = "data/out/people_from_csv.json"
+    sample_json = "data/lab05/samples/people.json"
+    out_csv = "data/lab05/out/people_from_json.csv"
+    out_json = "data/lab05/out/people_from_csv.json"
 
     print("="*30)
 
@@ -131,3 +127,17 @@ if __name__ == "__main__":
         print('='*30)
     except Exception as e:
         print(f"\nОшибка: {e}")
+
+
+data = [{"name": "Alice", "age": 22}, {"name": "Bob", "age": 25}]
+path = Path("data/out/people1.json")
+
+# Записываем данные в файл
+with path.open("w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+    print(f"Данные успешно записаны в {path}")
+
+# Читаем данные обратно
+with path.open(encoding="utf-8") as f:
+    loaded_data = json.load(f)
+    print("Прочитанные данные:", loaded_data)
