@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 
 def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
@@ -58,3 +58,29 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
         
     except Exception as e:
         raise ValueError(f"Ошибка при создании XLSX файла: {e}")
+
+if __name__ == "__main__":
+    print("=" * 30)
+
+    in_csv = "data/lab05/samples/people.csv"
+    out_xlsx = "data/lab05/out/people_from_csv.xlsx"
+
+    try:
+        print("Test 3: CSV -> XLSX ")
+        with open(in_csv, 'r', encoding='utf-8') as f:
+            c_len = len(f.readlines()) - 1
+
+        csv_to_xlsx(in_csv, out_xlsx)
+
+        wb = load_workbook(out_xlsx)
+        ws = wb["Sheet1"]
+        final_xlsx_len = ws.max_row - 1
+
+        print(f"--- Записей CSV: {c_len}")
+        print(f"--- Записей XLSX: {final_xlsx_len}")
+
+        assert c_len == final_xlsx_len, "Количество записей не совпадает!"
+        print("Успешно!")
+        print('=' * 30)
+    except Exception as e:
+        print(f"\nОшибка: {e}")

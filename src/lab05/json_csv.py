@@ -85,59 +85,51 @@ def csv_to_json(csv_path: str, json_path: str) -> None:
         raise ValueError(f"Ошибка записи JSON: {e}")
 
 
-if __name__ == "__main__":
-    sample_json = "data/lab05/samples/people.json"
-    out_csv = "data/lab05/out/people_from_json.csv"
-    out_json = "data/lab05/out/people_from_csv.json"
+# if __name__ == "__main__":
+#     sample_json = "data/lab05/samples/people.json"
+#     out_csv = "data/lab05/out/people_from_json.csv"
+#     out_json = "data/lab05/out/people_from_csv.json"
 
-    print("="*30)
+#     print("="*30)
 
-    try:
-        # ----------------------------------
-        # JSON -> CSV
-        # ----------------------------------
-        print('Test 1: JSON -> CSV')
-        with open(sample_json, 'r', encoding='utf-8') as f:
-            j_len = len(json.load(f))
-        json_to_csv(sample_json, out_csv)
+#     try:
+#         # ----------------------------------
+#         # JSON -> CSV
+#         # ----------------------------------
+#         print('Test 1: JSON -> CSV')
+#         with open(sample_json, 'r', encoding='utf-8') as f:
+#             j_len = len(json.load(f))
+#         json_to_csv(sample_json, out_csv)
 
-        with open(out_csv, 'r', encoding='utf-8') as f:
-            c_len = len(f.readlines()) - 1 # не считаем заголовок
-        print(f"Записей JSON: {j_len}")
-        print(f"Записей CSV:  {c_len}")
+#         with open(out_csv, 'r', encoding='utf-8') as f:
+#             c_len = len(f.readlines()) - 1 # не считаем заголовок
+#         print(f"Записей JSON: {j_len}")
+#         print(f"Записей CSV:  {c_len}")
 
-        assert j_len == c_len, 'Количество записей не совпадает!'
-        print("Успешно!")
+#         assert j_len == c_len, 'Количество записей не совпадает!'
+#         print("Успешно!")
 
-        print('-'*30)
+#         print('-'*30)
         
-        # -------------------------------------
-        # CSV -> JSON
-        # -------------------------------------
-        print('Test 2: CSV -> JSON')
-        csv_to_json(out_csv, out_json)
-        with open(out_json, 'r', encoding='utf-8') as f:
-            final_j_len = len(json.load(f))
-        print(f"Записей CSV:  {c_len}")
-        print(f"Записей JSON: {final_j_len}")
+#         # -------------------------------------
+#         # CSV -> JSON
+#         # -------------------------------------
+#         print('Test 2: CSV -> JSON')
+#         csv_to_json(out_csv, out_json)
+#         with open(out_json, 'r', encoding='utf-8') as f:
+#             final_j_len = len(json.load(f))
+#         print(f"Записей CSV:  {c_len}")
+#         print(f"Записей JSON: {final_j_len}")
 
-        assert c_len == final_j_len, 'Количество записей не совпадает!'
-        print("Успешно!")
+#         assert c_len == final_j_len, 'Количество записей не совпадает!'
+#         print("Успешно!")
 
-        print('='*30)
-    except Exception as e:
-        print(f"\nОшибка: {e}")
+#         print('='*30)
+#     except Exception as e:
+#         print(f"\nОшибка: {e}")
 
-
-data = [{"name": "Alice", "age": 22}, {"name": "Bob", "age": 25}]
-path = Path("data/out/people1.json")
-
-# Записываем данные в файл
-with path.open("w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"Данные успешно записаны в {path}")
-
-# Читаем данные обратно
-with path.open(encoding="utf-8") as f:
-    loaded_data = json.load(f)
-    print("Прочитанные данные:", loaded_data)
+json_to_csv(
+    json_path="data/lab05/samples/students.json",
+    csv_path="data/lab05/out/students.csv"
+)
+print("Готово! Файл students.csv создан.")
