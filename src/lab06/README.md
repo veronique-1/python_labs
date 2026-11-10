@@ -76,20 +76,22 @@ def main(argv=None) -> None:
 if __name__ == "__main__":
     main()
 ```
-### Выводы
-cat — вывод файла
+## Выводы
+### cat — вывод файла
 ```
 python -m src.lab06.cli_text cat --input data/lab05/samples/people.csv -n
 python -m src.lab06.cli_text cat --input data/lab05/samples/people.csv -n
 ```
 Файл читается в UTF-8. С флагом `-n` каждая строка получает номер в формате `1: содержимое строки`.
+
 ![фото](../../images/lab06/v1.png)
 
-stats — частоты слов
+### stats — частоты слов
 ![фото](../../images/lab06/m.png)
 ```
 python -m src.lab06.cli_text stats --input data/lab06/samples/moscow.txt
 python -m src.lab06.cli_text stats --input data/lab06/samples/moscow.txt --top 3 
 ```
 Результат выводится в формате «слово — табуляция — количество», по убыванию частоты; при равной частоте — по алфавиту. Если разных слов меньше, чем `N`, выводятся все имеющиеся. Значение `--top` должно быть положительным целым числом.
+
 ![фото](../../images/lab06/v2.png)
