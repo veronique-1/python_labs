@@ -79,7 +79,7 @@ if __name__ == "__main__":
 ## Выводы
 ### cat — вывод файла
 ```
-python -m src.lab06.cli_text cat --input data/lab05/samples/people.csv -n
+python -m src.lab06.cli_text cat --input data/lab05/samples/people.csv
 python -m src.lab06.cli_text cat --input data/lab05/samples/people.csv -n
 ```
 Файл читается в UTF-8. С флагом `-n` каждая строка получает номер в формате `1: содержимое строки`.
@@ -92,7 +92,7 @@ python -m src.lab06.cli_text cat --input data/lab05/samples/people.csv -n
 python -m src.lab06.cli_text stats --input data/lab06/samples/moscow.txt
 python -m src.lab06.cli_text stats --input data/lab06/samples/moscow.txt --top 3 
 ```
-Результат выводится в формате «слово — табуляция — количество», по убыванию частоты; при равной частоте — по алфавиту. Если разных слов меньше, чем `N`, выводятся все имеющиеся. Значение `--top` должно быть положительным целым числом.
+Функция выводит общее количество слов, количество уникальных слов, а затем список самых частых слов в формате слово: количество. По умолчанию выводится Топ-5, но с помощью флага --top можно задать любое другое положительное число. Значение --top проверяется: если оно меньше 1, программа выдает ошибку.
 
 ![фото](../../images/lab06/v2.png)
 
@@ -179,9 +179,9 @@ if __name__ == "__main__":
     main()
 ```
 ```
- python -m src.lab06.cli_convert json2csv --in data/lab05/samples/people.json --out data/lab05/out/people.csv
- python -m src.lab06.cli_convert csv2json --in data/lab05/samples/people.csv --out data/lab05/out/people.json
- python -m src.lab06.cli_convert csv2xlsx --in data/lab05/samples/people.csv --out data/lab05/out/people.xlsx
+ python -m src.lab06.cli_convert json2csv --in data/lab05/samples/people.json --out data/lab06/out/people.csv
+ python -m src.lab06.cli_convert csv2json --in data/lab05/samples/people.csv --out data/lab06/out/people.json
+ python -m src.lab06.cli_convert csv2xlsx --in data/lab05/samples/people.csv --out data/lab06/out/people.xlsx
  ```
 ![фото](../../images/lab06/v3.png)
 
