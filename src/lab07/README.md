@@ -160,4 +160,245 @@ def selection_sort(nums: list[int]) -> list[int]:
 - в конце меняем местами a[i] и a[minidx]
 
 # Модуль src/lab07/check.py. Проверка против эталона на случайных данных:
+```python
+import random
+from src.lab07.search import linear_search, binary_search, two_sum_brute, two_sum_fast
+from src.lab07.sorting import bubble_sort, insertion_sort, selection_sort
+
+def check_sorting(fn, trials: int = 100) -> int:
+    """Проверяет функцию сортировки на случайных данных против эталонного sorted().
+    Принимает конкретную функцию для проверки и кол-во испытаний (по умолчанию 100).
+    Возвращает кол-во успешно пройденных тестов.
+    """
+    for _ in range(trials):
+        n = random.randint(0, 50)
+        nums = [random.randint(-100, 100) for _ in range(n)]
+        original = list(nums)
+        result = fn(nums)
+        assert result == sorted(nums), f"{fn.__name__} ошиблась на {nums}: получено {result}, ожидалось {sorted(nums)}"
+        assert nums == original, f"{fn.__name__} изменила исходный список"
+    return trials
+```
+- запускаем цикл на trials раз (по умолчанию 100)
+- генерируем случайный список nums длиной от 0 до 50 и создаем его копию original
+- вызываем проверяемую функцию fn(nums) и сравниваем результат с эталоном sorted(nums) через assert; если не совпало — падаем с ошибкой и показываем список
+- проверяем, что исходный nums не изменился (сравниваем с original)
+
+```python
+def check_search(trials: int = 100) -> int:
+    """Проверяет функции linear_search и binary_search на случайных данных.
+    Возвращает количество успешно пройденных испытаний.
+    """
+    for _ in range(trials):
+        n = random.randint(0, 50)
+        nums = [random.randint(-50, 50) for _ in range(n)]
+        x = random.randint(-60, 60)
+
+        # Линейный поиск против list.index
+        try:
+            expected_lin = nums.index(x)
+        except ValueError:
+            expected_lin = -1  # если числа нет, то правильный ответ(эталон) = -1
+        
+        actual_lin = linear_search(nums, x)
+        assert actual_lin == expected_lin, f"linear_search ошиблась для поиска {x} в {nums}: получено {actual_lin}, ожидалось {expected_lin}"
+
+        # Бинарный поиск
+        sorted_nums = sorted(nums)
+        try:
+            expected_bin = sorted_nums.index(x)
+        except ValueError:
+            expected_bin = -1
+            
+        actual_bin = binary_search(sorted_nums, x)
+        if expected_bin == -1:
+            assert actual_bin == -1, f"binary_search не нашла элемент, которого нет: {x} в {sorted_nums}"
+        else:
+            assert actual_bin != -1 and sorted_nums[actual_bin] == x, f"binary_search вернула некорректный индекс {actual_bin} для {x} в {sorted_nums}"
+
+    # Редкие случаи (граничные условия)
+    assert binary_search([], 5) == -1
+    assert binary_search([5], 5) == 0
+    assert binary_search([5], 7) == -1
+    assert binary_search([1, 3], 3) == 1
+
+    return trials
+```
+- запускаем цикл на trials раз
+- генерируем случайный список nums и искомое число x
+- для linear_search сверяемся с list.index: оборачиваем его в try/except, чтобы получить -1 вместо ошибки, если элемента нет; сравниваем через assert
+- для binary_search сортируем nums, ищем x через list.index; если элемента нет, проверяем, что функция вернула -1, если есть — проверяем, что по возвращенному индексу действительно лежит x
+- в конце руками проверяем граничные случаи: пустой список, один элемент, элемент в начале/конце
+
+```python
+def check_two_sum(trials: int = 100) -> int:
+    """Проверяет эквивалентность результатов two_sum_brute и two_sum_fast.
+    Возвращает количество успешно пройденных тестов.
+    """
+    for _ in range(trials):
+        n = random.randint(2, 30)
+        nums = [random.randint(-30, 30) for _ in range(n)]
+        target = random.randint(-50, 50)
+
+        res_brute = two_sum_brute(nums, target)
+        res_fast = two_sum_fast(nums, target)
+
+        # Если медленный ничего не нашел, то быстрый тоже
+        if res_brute is None:
+            assert res_fast is None, f"two_sum_brute не нашла, а fast нашла {res_fast} для nums={nums}, target={target}"
+            continue
+        
+        # Если медленный нашел, то быстрый тоже должен найти
+        assert res_fast is not None, f"two_sum_brute нашла {res_brute}, fast не нашла для nums={nums}, target={target}"
+
+        # Если нашли, проверяем сумму для обоих
+        i, j = res_brute
+        assert nums[i] + nums[j] == target, f"brute вернул неверные индексы: {res_brute}"
+        i, j = res_fast
+        assert nums[i] + nums[j] == target, f"fast вернул неверные индексы: {res_fast}"
+        
+    return trials 
+
+if __name__ == "__main__":
+    random.seed(42)  # одни и те же случайные данные для всех алгоритмов
+    
+    total = 0
+    for fn in (bubble_sort, insertion_sort, selection_sort):
+        total += check_sorting(fn, trials=100)
+        
+    total += check_search()
+    total += check_two_sum()
+
+    print(f"OK: {total} проверок")
+
+# python -m src.lab07.check
+```
+- запускаем цикл на trials раз
+- генерируем список nums и target
+- запускаем обе функции: two_sum_brute и two_sum_fast
+- если brute вернула None (пары нет), проверяем через assert, что fast тоже вернула None
+- если brute нашла пару, проверяем, что fast тоже не None, и что сумма элементов по найденным индексам в обеих функциях равна target
+![фото](../../images/lab07/snimok.png)
+
 # Модуль src/lab07/bench.py. Замеры через timeit и таблица результатов:
+```python
+import random
+import timeit
+import csv
+from src.lab04.io_txt_csv import write_csv
+from src.lab07.sorting import bubble_sort, insertion_sort, selection_sort
+from src.lab07.search import linear_search, binary_search, two_sum_brute, two_sum_fast
+
+
+def format_time(seconds):
+    """Красиво форматируем время для таблицы."""
+    if isinstance(seconds, str):
+        return seconds
+    return f"{seconds:.4f} с" if seconds < 60 else "> 60 с"
+
+
+def print_row(task, n, impl, seconds):
+    """Вспомогательная функция для красивого вывода строки."""
+    # Если seconds - это строка (например, '>60'), выводим как есть, иначе форматируем
+    val = seconds if isinstance(seconds, str) else format_time(seconds)
+    print(f"{task:<10} | {n:<7} | {impl:<15} | {val:<12}")
+
+
+def run_benchmark():
+    random.seed(42)  # Чтобы при каждом запуске генерировались одни и те же данные
+    csv_results = []
+    headers = ["task", "n", "impl", "seconds"]
+
+    print("\nРезультаты бенчмарка:")
+    print(f"{headers[0]:<10} | {headers[1]:<7} | {headers[2]:<15} | {headers[3]:<12}")
+    print("-" * 55)
+
+    sizes_sort = [1000, 10000, 100000]
+
+    for n in sizes_sort:
+        data = [random.randint(-1000, 1000) for _ in range(n)]
+
+        # Встроенная сортировка (эталон)
+        t_sorted = timeit.timeit(lambda: sorted(data), number=1)
+        print_row("sorting", n, "sorted", t_sorted)
+        csv_results.append(("sorting", n, "sorted", t_sorted))
+
+        for fn, name in [(bubble_sort, "bubble"), (insertion_sort, "insertion"), (selection_sort, "selection")]:
+            if n >= 100000:
+                print_row("sorting", n, name, ">60")
+                csv_results.append(("sorting", n, name, ">60"))
+                continue
+            
+            # Важно: передаем копию data.copy(), чтобы исходные данные не менялись
+            t = timeit.timeit(lambda: fn(data.copy()), number=1)
+            print_row("sorting", n, name, t)
+            csv_results.append(("sorting", n, name, t))
+
+    n_search = 100000
+    search_data = [random.randint(-10000, 10000) for _ in range(n_search)]
+    search_sorted = sorted(search_data)
+    queries = [random.randint(-10000, 10000) for _ in range(10000)]
+
+    # Линейный поиск
+    t_linear = timeit.timeit(lambda: [linear_search(search_data, x) for x in queries], number=1)
+    print_row("search", n_search, "linear_search", t_linear)
+    csv_results.append(("search", n_search, "linear_search", t_linear))
+
+    # Бинарный поиск (включая сортировку)
+    def sort_and_search():
+        s_data = sorted(search_data)
+        for x in queries:
+            binary_search(s_data, x)
+    t_binary = timeit.timeit(sort_and_search, number=1)
+    print_row("search", n_search, "binary_search", t_binary)
+    print(" " * 36 + "(вкл. сортировку)") # Подпись под таблицей
+    csv_results.append(("search", n_search, "binary_search", t_binary))
+
+    for n in [1000, 10000]:
+        nums = [random.randint(0, n) for _ in range(n)]
+        # Делаем так, чтобы правильная пара лежала в самом конце,
+        # иначе brute найдет её моментально и покажет 0.0000
+        nums[-2:] = [-1, -2]
+        target = -3
+
+        t_brute = timeit.timeit(lambda: two_sum_brute(nums, target), number=1)
+        print_row("two_sum", n, "two_sum_brute", t_brute)
+        csv_results.append(("two_sum", n, "two_sum_brute", t_brute))
+
+        t_fast = timeit.timeit(lambda: two_sum_fast(nums, target), number=1)
+        print_row("two_sum", n, "two_sum_fast", t_fast)
+        csv_results.append(("two_sum", n, "two_sum_fast", t_fast))
+
+    print("\n---Сохранение данных---")
+    try:
+        # Для записи в CSV мы не можем передать строку ">60" в поле float,
+        # поэтому просто передаем как есть, write_csv должен обработать.
+        write_csv(rows=csv_results, path="data/lab07/bench.csv", header=tuple(headers))
+        print("Результаты сохранены в data/lab07/bench.csv")
+    except Exception as e:
+        print(f"Ошибка сохранения CSV: {e}")
+        print("Данные, которые не удалось сохранить:")
+        for row in csv_results:
+            print(row)
+
+
+if __name__ == "__main__":
+    run_benchmark()
+
+# python -m src.lab07.bench
+```
+- format_time: форматирует время в секунды с точностью до 4 знаков, если время больше 60 сек — выводит "> 60 с"
+- print_row: вспомогательная функция для красивого вывода строки таблицы с выравниванием колонок
+- run_benchmark (Сортировки):
+>- для n = 1000, 10000, 100000 генерирует случайный список
+>- замеряет эталонный sorted, затем три рукописные сортировки на копии данных
+>- для n = 100000 квадратичные сортировки пропускаются (пишется >60), чтобы не ждать
+- run_benchmark (Поиск):
+>- создает список на 100 000 элементов и 10 000 запросов
+>- замеряет linear_search по всему списку
+>- замеряет binary_search (включая время предварительной сортировки, отдельной строкой)
+- run_benchmark (Two Sum):
+>- для n = 1000, 10000 создает список, где правильная пара лежит в конце (чтобы brute не нашел её моментально)
+>- замеряет two_sum_brute и two_sum_fast
+- Сохранение: записывает все результаты в data/lab07/bench.csv через write_csv (из ЛР4)
+- random.seed(42): гарантирует, что при каждом запуске данные будут одинаковыми (для честного сравнения)
