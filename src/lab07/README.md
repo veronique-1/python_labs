@@ -403,3 +403,29 @@ if __name__ == "__main__":
 >- замеряет two_sum_brute и two_sum_fast
 - Сохранение: записывает все результаты в data/lab07/bench.csv через write_csv (из ЛР4)
 - random.seed(42): гарантирует, что при каждом запуске данные будут одинаковыми (для честного сравнения)
+
+![фото](../../images/lab07/snimok2.png)
+
+## Таблица Бенчмарка 
+| Задача | n | Реализация | Время, с |
+|---|---:|---|---:|
+| sorting    | 1000    | sorted          | 0.0001 с    
+| sorting    | 1000    | bubble          | 0.0349 с    
+| sorting    | 1000    | insertion       | 0.0184 с    
+| sorting    | 1000    | selection       | 0.0160 с    
+| sorting    | 10000   | sorted          | 0.0007 с    
+| sorting    | 10000   | bubble          | 3.2360 с    
+| sorting    | 10000   | insertion       | 1.4646 с    
+| sorting    | 10000   | selection       | 1.4560 с    
+| sorting    | 100000  | sorted          | 0.0090 с    
+| sorting    | 100000  | bubble          | >60         
+| sorting    | 100000  | insertion       | >60         
+| sorting    | 100000  | selection       | >60         
+| search     | 100000  | linear_search   | 4.9237 с    
+| search     | 100000  | binary_search(вкл. сортировку) | 0.0236 с    
+| two_sum    | 1000    | two_sum_brute   | 0.0210 с    
+| two_sum    | 1000    | two_sum_fast    | 0.0001 с    
+| two_sum    | 10000   | two_sum_brute   | 1.9236 с    
+| two_sum    | 10000   | two_sum_fast    | 0.0011 с   
+
+Таблица соответствует [bench.csv](../../data/lab07/bench.csv)
